@@ -14,6 +14,12 @@ interface ItemDatabaseDao {
     @Query("SELECT * from users LIMIT 1")
     fun listUsersEmpty(): User?
 
+    @Query("SELECT * FROM users WHERE name LIKE '%' || :searchText || '%'")
+    fun searchUsersByNameLetter(searchText: String): List<User>
+
+    @Query("SELECT * FROM users WHERE name = :searchText")
+    fun searchUsersByNameWord(searchText: String): List<User>
+
     @Delete
     fun delete(user: User)
 }

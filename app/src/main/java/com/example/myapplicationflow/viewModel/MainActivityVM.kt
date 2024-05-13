@@ -1,6 +1,8 @@
 package com.example.myapplicationflow.viewModel
 
 import android.app.Application
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.myapplicationflow.database.ItemDatabase
@@ -11,30 +13,75 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 
-class MainActivityVM(application: Application) : ViewModel() {
+class MainActivityVM(application: Application, private val context: Context) : ViewModel() {
     private val database = ItemDatabase.getInstance(application).itemDatabaseDao
 
     private var _usersFlow = MutableSharedFlow<ArrayList<User>>(replay = 1)
     val usersFlow: Flow<ArrayList<User>> = _usersFlow.asSharedFlow()
 
-    fun loadListFlow() {
+    private var _letterOrWord = MutableSharedFlow<Boolean>(replay = 1)
+    val letterOrWord: Flow<Boolean> = _letterOrWord.asSharedFlow()
+
+    fun setLetterOrWord(boolean: Boolean) {
         viewModelScope.launch(Dispatchers.Main) {
-            // Оновлення значення _usersFlow за допомогою методу emit
-            _usersFlow.emit(database.getAllUsers() as ArrayList<User>) // Використовуємо first() для отримання першого елемента потоку
+            _letterOrWord.emit(boolean)
         }
     }
 
-    fun addItemFlow(user: User) {
+    fun loadListFlow() {
+        updateListFlow()
+    }
+
+    /*fun addItemFlow(user: User) {
         viewModelScope.launch(Dispatchers.Main) {
             _usersFlow.emit(_usersFlow.replayCache.firstOrNull()?.apply { add(user) }
                 ?: arrayListOf(user))
             database.insert(user)
         }
+    }*/
+
+    fun deleteUser(user: User) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                database.delete(user)
+                updateListFlow()
+            } catch (e: Exception) {
+                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
-    private fun deleteUser(item: User) {
+    fun addUserFlow(user: User) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                database.insert(user)
+                updateListFlow()
+            } catch (e: Exception) {
+                Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    fun searchUsersByNameLetter(searchText: String) {
         viewModelScope.launch(Dispatchers.Main) {
-            database.delete(item)
+            _usersFlow.emit(database.searchUsersByNameLetter(searchText) as ArrayList<User>)
+        }
+    }
+
+    fun searchUsersByNameWord(searchText: String) {
+        viewModelScope.launch(Dispatchers.Main) {
+            val newResult = database.searchUsersByNameWord(searchText)
+            if (newResult.isNotEmpty()) {
+                _usersFlow.emit(newResult as ArrayList<User>)
+            } else {
+                _usersFlow.emit(database.getAllUsers() as ArrayList<User>)
+            }
+        }
+    }
+
+    private fun updateListFlow() {
+        viewModelScope.launch(Dispatchers.Main) {
+            _usersFlow.emit(database.getAllUsers() as ArrayList<User>)
         }
     }
 }

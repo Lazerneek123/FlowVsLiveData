@@ -1,6 +1,6 @@
 package com.example.myapplicationflow.adapter
 
-interface OnMessageClick {
+interface OnAdapterClick {
     fun onClick()
     fun onLongClick()
 }

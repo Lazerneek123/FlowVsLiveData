@@ -35,18 +35,18 @@
             android:layout_marginEnd="30dp"
             android:background="@color/transparent"
             android:backgroundTint="@color/transparent"
-            android:hint="New user"
+            android:hint="Search user"
             android:textColorHint="@color/green"
             app:counterEnabled="true"
             app:counterMaxLength="20"
             app:counterTextColor="@color/green"
             app:endIconMode="clear_text"
             app:endIconTint="@color/gray_dark"
-            app:startIconDrawable="@android:drawable/ic_menu_edit"
+            app:startIconDrawable="@android:drawable/ic_menu_search"
             app:startIconTint="@color/green">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/carModel"
+                android:id="@+id/userNameTextInputEdit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="1dp"
@@ -57,10 +57,11 @@
                 tools:ignore="TouchTargetSizeCheck" />
 
             <Button
-                android:id="@+id/addBtn"
+                android:id="@+id/letterOrWordBtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/add"/>
+                android:layout_gravity="center"
+                android:text="Letter"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -77,5 +78,21 @@
         tools:listitem="@layout/item_user">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addButton"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
+        android:contentDescription="@string/app_name"
+        android:src="@android:drawable/ic_input_add"
+        app:elevation="0dp"
+        app:fabCustomSize="75dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="15dp"
+        app:layout_anchorGravity="bottom|center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:maxImageSize="35dp"
+        app:tint="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
