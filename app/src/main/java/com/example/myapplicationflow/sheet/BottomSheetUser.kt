@@ -5,13 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.myapplicationflow.MainActivity
-import com.example.myapplicationflow.databinding.PopUpUserPanelBinding
+import com.example.myapplicationflow.databinding.PopUpUserBinding
 import com.example.myapplicationflow.models.User
 import com.example.myapplicationflow.viewModel.MainActivityVM
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomSheetUser : BottomSheetDialogFragment() {
-    private var binding: PopUpUserPanelBinding? = null
+    private var binding: PopUpUserBinding? = null
     private lateinit var mainActivityViewModel: MainActivityVM
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -25,7 +25,7 @@ class BottomSheetUser : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = PopUpUserPanelBinding.inflate(layoutInflater)
+        binding = PopUpUserBinding.inflate(layoutInflater)
 
         binding!!.addBtn.setOnClickListener {
             with(binding!!) {

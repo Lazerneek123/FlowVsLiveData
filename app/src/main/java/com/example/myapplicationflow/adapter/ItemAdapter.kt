@@ -3,18 +3,24 @@ package com.example.myapplicationflow.adapter
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myapplicationflow.MainActivity
+import com.example.myapplicationflow.sheet.BottomSheetEditUser
 import com.example.myapplicationflow.databinding.ItemUserBinding
 import com.example.myapplicationflow.models.User
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class ItemAdapter :
+class ItemAdapter(private val fragmentManager: FragmentManager) :
     ListAdapter<User, ItemAdapter.ItemHolder>(ItemHolder.ItemComparator()) {
 
     class ItemHolder(
-        private val binding: ItemUserBinding
+        private val binding: ItemUserBinding,
+        private val fragmentManager: FragmentManager
     ) :
         RecyclerView.ViewHolder(binding.root), OnAdapterClick {
 
@@ -36,6 +42,16 @@ class ItemAdapter :
                     }.show()
             }
 
+            floatingActionButtonEdit.setOnClickListener {
+                val viewModel = (binding.root.context as MainActivity).viewModel
+                viewModel.viewModelScope.launch(Dispatchers.Main) {
+                    viewModel._user.emit(user)
+                }
+
+                val bottomSheetInformation = BottomSheetEditUser()
+                bottomSheetInformation.show(fragmentManager, "TAG")
+            }
+
             onClick()
             onLongClick()
         }
@@ -53,14 +69,16 @@ class ItemAdapter :
 
         companion object {
             fun create(
-                parent: ViewGroup
+                parent: ViewGroup,
+                fragmentManager: FragmentManager
             ): ItemHolder {
                 return ItemHolder(
                     ItemUserBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
-                    )
+                    ),
+                    fragmentManager
                 )
             }
         }
@@ -78,7 +96,7 @@ class ItemAdapter :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
-        return ItemHolder.create(parent)
+        return ItemHolder.create(parent, fragmentManager)
     }
 
     override fun onBindViewHolder(holder: ItemHolder, position: Int) {

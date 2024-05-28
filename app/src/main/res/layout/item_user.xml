@@ -89,6 +89,18 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/floatingActionButtonEdit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5sp"
+            android:backgroundTint="@color/yellow"
+            android:src="@android:drawable/ic_menu_edit"
+            android:tint="@color/white"
+            app:backgroundTint="@color/black"
+            app:fabSize="mini"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButtonDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

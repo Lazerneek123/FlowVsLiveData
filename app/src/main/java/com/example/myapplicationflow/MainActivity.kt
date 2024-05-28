@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.annotation.SuppressLint
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,11 @@ import com.example.myapplicationflow.viewModel.MainActivityVMFactory
 import com.example.myapplicationflow.databinding.ActivityMainBinding
 import com.example.myapplicationflow.sheet.BottomSheetUser
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import kotlin.system.measureTimeMillis
 
 class MainActivity : AppCompatActivity() {
     lateinit var viewModel: MainActivityVM
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         viewModel.setLetterOrWord(true) // встановлення пошуку по буквам
 
         recyclerView = binding.userListRecyclerView
-        itemAdapter = ItemAdapter()
+        itemAdapter = ItemAdapter(supportFragmentManager)
 
         realizationFlow()
         initRcView()
@@ -59,15 +63,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @OptIn(FlowPreview::class)
     @SuppressLint("SetTextI18n")
     private fun onChangeListenerFlow() {
+        viewModel.loadRoles()
+        viewModel.loadListFlow()
         viewModel.viewModelScope.launch(Dispatchers.Main) {
-            viewModel.loadListFlow()
             viewModel.usersFlow
+                //.map { users -> users.map { it.name } }
+                //.debounce(1000)
+                //.filter { users -> users.any { it.name!!.startsWith("v") } }
                 .collect { filteredList ->
                     itemAdapter.submitList(filteredList)
                     binding.countItem.text = "List: ${filteredList.size}"
                 }
+        }
+
+        binding.floatingActionButtonFilter.setOnClickListener {
+            viewModel.viewModelScope.launch(Dispatchers.Main) {
+                combine(viewModel.usersFlow, viewModel.rolesFlow) { users, roles ->
+                    users.filter { user -> roles.any { it.userId == user.id } }
+                }.collect { usersWithRoles ->
+                    itemAdapter.submitList(usersWithRoles)
+                    binding.countItem.text = "List: ${usersWithRoles.size}"
+                }
+            }
         }
     }
 
@@ -104,11 +124,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        btnLetterOrWord.setOnClickListener{
-            if(btnLetterOrWord.text == "Letter"){
+        btnLetterOrWord.setOnClickListener {
+            if (btnLetterOrWord.text == "Letter") {
                 viewModel.setLetterOrWord(false)
             }
-            if(btnLetterOrWord.text == "Word"){
+            if (btnLetterOrWord.text == "Word") {
                 viewModel.setLetterOrWord(true)
             }
         }

@@ -4,9 +4,10 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.myapplicationflow.models.Role
 import com.example.myapplicationflow.models.User
 
-@Database(entities = [User::class], version = 1, exportSchema = true)
+@Database(entities = [User::class, Role::class], version = 1, exportSchema = true)
 abstract class ItemDatabase : RoomDatabase() {
 
     abstract val itemDatabaseDao: ItemDatabaseDao
@@ -25,7 +26,10 @@ abstract class ItemDatabase : RoomDatabase() {
                         context.applicationContext,
                         ItemDatabase::class.java,
                         "users_information"
-                    ).allowMainThreadQueries().fallbackToDestructiveMigration().build()
+                    ).allowMainThreadQueries()
+                        //.addMigrations(MIGRATION_1_2) // Додаємо міграцію
+                        .fallbackToDestructiveMigration()
+                        .build()
 
                     INSTANCE = instance
                 }

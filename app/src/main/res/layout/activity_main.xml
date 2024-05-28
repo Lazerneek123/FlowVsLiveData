@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@color/white"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
@@ -56,12 +57,44 @@
                 android:textColor="@color/green_light"
                 tools:ignore="TouchTargetSizeCheck" />
 
-            <Button
-                android:id="@+id/letterOrWordBtn"
-                android:layout_width="wrap_content"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Letter"/>
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/countItem"
+                app:layout_constraintBottom_toTopOf="@id/userListRecyclerView">
+
+                <Button
+                    android:id="@+id/letterOrWordBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="Letter"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/floatingActionButtonFilter"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/floatingActionButtonFilter"
+                    android:layout_width="55dp"
+                    android:layout_height="55dp"
+                    android:backgroundTint="@color/blue"
+                    android:src="@android:drawable/ic_menu_my_calendar"
+                    android:tint="@color/white"
+                    app:backgroundTint="@color/black"
+                    app:fabSize="mini"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
 
         </com.google.android.material.textfield.TextInputLayout>
 
