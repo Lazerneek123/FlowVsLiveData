@@ -68,16 +68,26 @@ class MainActivity : AppCompatActivity() {
     private fun onChangeListenerFlow() {
         viewModel.loadRoles()
         viewModel.loadListFlow()
+
         viewModel.viewModelScope.launch(Dispatchers.Main) {
             viewModel.usersFlow
                 //.map { users -> users.map { it.name } }
-                //.debounce(1000)
-                //.filter { users -> users.any { it.name!!.startsWith("v") } }
+                //.debounce(3000)
+                //.filter { users -> users.any { it.name!!.startsWith("r") } }
                 .collect { filteredList ->
+                    val startTime = System.nanoTime()
+
                     itemAdapter.submitList(filteredList)
                     binding.countItem.text = "List: ${filteredList.size}"
+
+                    val endTime = System.nanoTime() // Кінець вимірювання часу
+                    val duration = endTime - startTime // Різниця в часі
+                    Log.d("Timing", "Time to execute (Flow): ${duration / 1_000_000} ms (${duration} ns)")
                 }
+
         }
+
+
 
         binding.floatingActionButtonFilter.setOnClickListener {
             viewModel.viewModelScope.launch(Dispatchers.Main) {
